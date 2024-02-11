@@ -3,7 +3,7 @@ package com.cqd.user.amount.common.error;
 import com.cqd.user.amount.common.utils.R;
 
 public class Error {
-    public static R handle(BizCodeEnum code){
+    public static R handle(BizCodeEnum code,String msg){
         switch (code){
             case UNKNOW_EXCEPTION:
                 return R.error(BizCodeEnum.UNKNOW_EXCEPTION.getCode(),
@@ -24,7 +24,7 @@ public class Error {
                 return R.error(BizCodeEnum.UNBOUND_LIMIT.getCode(),
                         BizCodeEnum.UNBOUND_LIMIT.getMsg());
             default:
-                return R.ok();
+                return R.ok(msg);
         }
 
     }

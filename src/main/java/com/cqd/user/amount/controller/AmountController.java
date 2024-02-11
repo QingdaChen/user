@@ -64,7 +64,7 @@ public class AmountController {
     //@RequiresPermissions("member:member:save")
     public R save(@RequestBody AmountEntity amount) {
         BizCodeEnum codeEnum = amountService.create(amount);
-        return Error.handle(codeEnum);
+        return Error.handle(codeEnum,"");
     }
 
     /**
@@ -79,7 +79,7 @@ public class AmountController {
         }
         BizCodeEnum codeEnum = amountService.updateBatchByUserIds(amountEntityList);
 
-        return Error.handle(codeEnum);
+        return Error.handle(codeEnum,"");
     }
 
     /**
@@ -90,7 +90,7 @@ public class AmountController {
     public R delete(@RequestBody String[] userIds) {
         BizCodeEnum codeEnum = amountService.deleteBatch(userIds);
 
-        return Error.handle(codeEnum);
+        return Error.handle(codeEnum,"");
     }
 
 }

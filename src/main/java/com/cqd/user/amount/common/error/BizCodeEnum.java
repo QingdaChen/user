@@ -15,6 +15,11 @@ public enum BizCodeEnum {
     SUCCESS(0,"请求成功"),
     UNKNOW_EXCEPTION(10000,"系统未知异常"),
     VAILD_EXCEPTION(10001,"参数格式校验失败"),
+    //定时任务相关
+    CRON_STOP_ERROR(12001,"停止失败,任务已在进行中"),
+    TASK_NOT_EXISTS(12002,"任务不存在"),
+
+    //用户额度信息相关
     USER_AMOUNT_NOT_EXISTS(15001,"用户额度信息不存在"),
     AMOUNT_CREATE_ERROR(15002,"用户额度信息保存错误"),
     UPDATE_ERROR(15003,"用户额度更新错误"),
