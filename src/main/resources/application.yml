@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/user?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF8&useSSL=false
+    username: root
+    password: 220108
+    type: com.alibaba.druid.pool.DruidDataSource #Druid类型
+    druid:
+      web-stat-filter: #监控Web
+        enabled: true
+      stat-view-servlet: #后台页面 http://localhost:8080/druid/login.html
+        enabled: true
+        login-username: root # 用户名
+        login-password: 220108 # 密码
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    org:
+      springframework:
+        boot:
+          autoconfigure: error #spring的自动装配日志只打error，否则debug输出的会打印很多自动装配的log信息到控制台

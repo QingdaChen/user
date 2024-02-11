@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cqd.user.amount.dao.AmountDao">
+
+	<!-- 根据userId查询额度信息 -->
+	<select id="getAmountByUserId" resultType="com.cqd.user.amount.entity.AmountEntity">
+		select * from `user_amount` where user_id = #{userId} and status = 1
+	</select>
+
+	<select id="getAmountsByUserIds" resultType="com.cqd.user.amount.entity.AmountEntity">
+		SELECT * FROM `user_amount` WHERE user_id IN
+		<foreach collection="userIds" item="id" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+		AND status = 1 Limit 0,25
+		FOR UPDATE
+	</select>
+	<update id="deleteByUserIds">
+		update `user_amount` set status = 0 where user_id in
+		<foreach item="id" collection="userIds"  open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+
+
+</mapper>
