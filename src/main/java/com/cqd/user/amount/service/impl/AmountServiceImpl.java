@@ -83,18 +83,8 @@ public class AmountServiceImpl extends ServiceImpl<AmountDao, AmountEntity> impl
     }
 
     @Override
-    public BizCodeEnum deleteBatch(String[] userIds) {
-        List<Long> ids = new ArrayList<>();
-        for (String idStr : userIds) {
-            long id = 0;
-            try {
-                id = Long.parseLong(idStr);
-            } catch (Exception e) {
-                return BizCodeEnum.VAILD_EXCEPTION;
-            }
-            ids.add(id);
-        }
-        this.baseMapper.deleteByUserIds(ids);
+    public BizCodeEnum deleteBatch(List<Long> userIds) {
+        this.baseMapper.deleteByUserIds(userIds);
         return BizCodeEnum.SUCCESS;
     }
 

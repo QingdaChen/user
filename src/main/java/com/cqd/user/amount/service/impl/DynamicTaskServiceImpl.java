@@ -3,7 +3,9 @@ package com.cqd.user.amount.service.impl;
 import cn.hutool.core.convert.ConverterRegistry;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cqd.user.amount.common.error.BizCodeEnum;
+import com.cqd.user.amount.entity.AmountEntity;
 import com.cqd.user.amount.entity.TaskEntity;
+import com.cqd.user.amount.service.AmountService;
 import com.cqd.user.amount.service.DynamicTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +35,14 @@ public class DynamicTaskServiceImpl implements DynamicTaskService {
     public List<String> taskList = new CopyOnWriteArrayList<>();
 
     @Autowired
-    private  ThreadPoolTaskScheduler syncScheduler;
+    private ThreadPoolTaskScheduler syncScheduler;
+
+    @Autowired
+    private AmountService amountService;
 
     /**
      * 查看已开启但还未执行的动态任务
+     *
      * @return
      */
     @Override
@@ -86,9 +93,36 @@ public class DynamicTaskServiceImpl implements DynamicTaskService {
             try {
                 System.out.println("此时时间==>" + LocalDateTime.now());
                 System.out.println("task中设定的时间==>" + task);
+                List<AmountEntity> amountEntities = task.getAmountEntities();
+                switch (task.getType()) {
+                    case CREATE:
+                        boolean ok = amountService.saveBatch(amountEntities);
+                        if (!ok) {
+                            log.error("定时任务执行出错:{}", task);
+                        }
+                        break;
+                    case UPDATE:
+                        BizCodeEnum codeEnum = amountService.updateBatchByUserIds(amountEntities);
+                        if (BizCodeEnum.SUCCESS.getCode() != codeEnum.getCode()) {
+                            log.error("定时任务执行出错:{}", task);
+                        }
+                        break;
+                    case DELETE:
+                        List<Long> userIds = new ArrayList<>();
+                        for (AmountEntity amount : amountEntities) {
+                            userIds.add(amount.getUserId());
+                        }
+                        codeEnum = amountService.deleteBatch(userIds);
+                        if (BizCodeEnum.SUCCESS.getCode() != codeEnum.getCode()) {
+                            log.error("定时任务执行出错:{}", task);
+                        }
+                        break;
+                    default:
+
+                }
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.error("定时任务执行出错:{}", task);
             }
             log.info("---end--------");
         };

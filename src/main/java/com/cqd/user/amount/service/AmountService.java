@@ -31,7 +31,7 @@ public interface AmountService extends IService<AmountEntity> {
     /**
      * 批量删除额度信息
      */
-    BizCodeEnum deleteBatch(String[] userIds);
+    BizCodeEnum deleteBatch(List<Long> userIds);
 
     /**
      * 批量更新额度信息

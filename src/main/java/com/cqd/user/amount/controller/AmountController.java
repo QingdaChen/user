@@ -87,7 +87,7 @@ public class AmountController {
      */
     @RequestMapping("/delete")
     //@RequiresPermissions("member:member:delete")
-    public R delete(@RequestBody String[] userIds) {
+    public R delete(@RequestBody List<Long> userIds) {
         BizCodeEnum codeEnum = amountService.deleteBatch(userIds);
 
         return Error.handle(codeEnum,"");
