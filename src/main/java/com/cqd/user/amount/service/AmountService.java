@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.cqd.user.amount.common.error.BizCodeEnum;
 import com.cqd.user.amount.common.utils.PageUtils;
 import com.cqd.user.amount.entity.AmountEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,8 @@ public interface AmountService extends IService<AmountEntity> {
      * 批量更新额度信息
      */
     BizCodeEnum updateBatchByUserIds(List<AmountEntity> amountEntities);
+
+    BizCodeEnum changeAmountBatch(List<AmountEntity> amountEntities, Double changeAmount, Double maxAmount, Double minAmount);
 
     BizCodeEnum create(AmountEntity amount);
 }

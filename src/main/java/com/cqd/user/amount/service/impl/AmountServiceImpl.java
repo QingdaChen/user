@@ -9,7 +9,6 @@ import com.cqd.user.amount.common.constant.StatusEnum;
 import com.cqd.user.amount.common.error.BizCodeEnum;
 import com.cqd.user.amount.common.utils.PageUtils;
 import com.cqd.user.amount.common.utils.Query;
-import com.cqd.user.amount.common.utils.R;
 import com.cqd.user.amount.common.utils.RRException;
 import com.cqd.user.amount.dao.AmountDao;
 import com.cqd.user.amount.entity.AmountEntity;
@@ -115,9 +114,48 @@ public class AmountServiceImpl extends ServiceImpl<AmountDao, AmountEntity> impl
                 return BizCodeEnum.UNBOUND_LIMIT;
             }
         }
-        for(AmountEntity amount:amountEntities){
+        for (AmountEntity amount : amountEntities) {
             boolean ok = this.update(amount, new UpdateWrapper<AmountEntity>().eq("user_id", amount.getUserId()));
-            if(!ok){
+            if (!ok) {
+                throw new RRException("mysql update error");
+            }
+        }
+
+        return BizCodeEnum.SUCCESS;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public BizCodeEnum changeAmountBatch(List<AmountEntity> amountEntities,
+                         Double changeAmount, Double maxAmount,Double minAmount) {
+        List<Long> ids = new ArrayList<>();
+        for (AmountEntity amount : amountEntities) {
+            if (amount.getUserId() == 0 || maxAmount < 0) {
+                return BizCodeEnum.VAILD_EXCEPTION;
+            }
+            ids.add(amount.getUserId());
+            amount.setUpdateTime(new Date());
+            amount.setStatus(StatusEnum.EXIST.getValue());
+        }
+        List<AmountEntity> amounts = this.baseMapper.getAmountsByUserIds(ids);
+        Map<Long, AmountEntity> amountMap = new HashMap<>();
+        for (AmountEntity amount : amounts) {
+            amountMap.put(amount.getUserId(), amount);
+        }
+        for (AmountEntity newAmount : amountEntities) {
+            AmountEntity curAmount = amountMap.get(newAmount.getUserId());
+            if (curAmount != null) {
+                newAmount.setAmount(curAmount.getAmount());
+                Double sum = curAmount.getAmount() + changeAmount;
+                if (sum >= 0 && sum <= maxAmount) {
+                    newAmount.setAmount(sum);
+                }
+            }
+
+        }
+        for (AmountEntity newAmount : amountEntities) {
+            boolean ok = this.update(newAmount, new UpdateWrapper<AmountEntity>().eq("user_id", newAmount.getUserId()));
+            if (!ok) {
                 throw new RRException("mysql update error");
             }
         }

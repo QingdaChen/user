@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -31,6 +32,7 @@ public class AmountEntity implements Serializable {
     /**
      * user_id
      */
+    @JsonProperty(value = "user_id")
     private Long userId;
     /**
      * 额度
@@ -39,6 +41,7 @@ public class AmountEntity implements Serializable {
     /**
      * 限额
      */
+    @JsonProperty(value = "max_limit")
     private Double maxLimit;
     /**
      * 状态【 1:存在 0:已删除】
@@ -47,10 +50,12 @@ public class AmountEntity implements Serializable {
     /**
      * create_time
      */
+    @JsonProperty(value = "create_time")
     private Date createTime;
     /**
      * update_time
      */
+    @JsonProperty(value = "update_time")
     private Date updateTime;
 
 

@@ -5,6 +5,9 @@ import com.cqd.user.amount.common.error.Error;
 import com.cqd.user.amount.common.utils.R;
 import com.cqd.user.amount.entity.TaskEntity;
 import com.cqd.user.amount.service.DynamicTaskService;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +20,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/dynamicTask")
+@Slf4j
 public class DynamicTaskController {
 
     @Autowired
@@ -32,7 +36,6 @@ public class DynamicTaskController {
         return dynamicTaskService.getTaskList();
     }
 
-
     /**
      * 开启一个动态任务
      *
@@ -41,6 +44,8 @@ public class DynamicTaskController {
      */
     @PostMapping("/dynamic")
     public R startDynamicTask(@RequestBody TaskEntity task) {
+
+        log.debug("TaskEntity:{}",task);
         // 将这个添加到动态定时任务中去
         dynamicTaskService.add(task);
         return Error.handle(BizCodeEnum.SUCCESS, "动态任务:" + task.getName() + " 已开启");
@@ -53,7 +58,7 @@ public class DynamicTaskController {
      * @param name
      * @return
      */
-    @DeleteMapping("/{name}")
+    @PostMapping("/stop/{name}")
     public R stopDynamicTask(@PathVariable("name") String name) {
         // 将这个添加到动态定时任务中去
         BizCodeEnum codeEnum = dynamicTaskService.stop(name);

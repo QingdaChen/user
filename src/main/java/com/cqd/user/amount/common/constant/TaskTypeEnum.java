@@ -3,7 +3,8 @@ package com.cqd.user.amount.common.constant;
 public enum TaskTypeEnum {
     CREATE(0),
     UPDATE(1),
-    DELETE(2);
+    DELETE(2),
+    CHANGE(3);
     private int value;
 
     TaskTypeEnum(int value) {
