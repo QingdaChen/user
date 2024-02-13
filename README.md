@@ -219,7 +219,7 @@
 
 <img src="image/image-20240213154916942.png" alt="image-20240213154916942" style="zoom:50%;" />
 
-    - 开启任务
+    - 开启任务 
 
   ```java
   //接口：POST http://localhost:8080/dynamicTask/stop/{name}
