@@ -92,13 +92,11 @@ public class AmountServiceImpl extends ServiceImpl<AmountDao, AmountEntity> impl
     public BizCodeEnum updateBatchByUserIds(List<AmountEntity> amountEntities) {
         List<Long> ids = new ArrayList<>();
         for (AmountEntity amount : amountEntities) {
-            if (amount.getUserId() == 0 || amount.getStatus() == StatusEnum.NOT_EXIST.getValue() ||
-                    amount.getAmount() < 0 || amount.getMaxLimit() < 0) {
+            if (amount.getUserId() == 0) {
                 return BizCodeEnum.VAILD_EXCEPTION;
             }
             ids.add(amount.getUserId());
             amount.setUpdateTime(new Date());
-            amount.setStatus(StatusEnum.EXIST.getValue());
         }
         List<AmountEntity> amounts = this.baseMapper.getAmountsByUserIds(ids);
         Map<Long, AmountEntity> amountMap = new HashMap<>();
@@ -110,7 +108,7 @@ public class AmountServiceImpl extends ServiceImpl<AmountDao, AmountEntity> impl
             if (entity == null) {
                 return BizCodeEnum.UPDATE_ERROR;
             }
-            if (amount.getAmount() > entity.getMaxLimit()) {
+            if (amount.getAmount() != null && amount.getAmount() > entity.getMaxLimit()) {
                 return BizCodeEnum.UNBOUND_LIMIT;
             }
         }
@@ -127,7 +125,7 @@ public class AmountServiceImpl extends ServiceImpl<AmountDao, AmountEntity> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public BizCodeEnum changeAmountBatch(List<AmountEntity> amountEntities,
-                         Double changeAmount, Double maxAmount,Double minAmount) {
+                                         Double changeAmount, Double maxAmount, Double minAmount) {
         List<Long> ids = new ArrayList<>();
         for (AmountEntity amount : amountEntities) {
             if (amount.getUserId() == 0 || maxAmount < 0) {
@@ -172,7 +170,11 @@ public class AmountServiceImpl extends ServiceImpl<AmountDao, AmountEntity> impl
         if (amount.getUserId() == 0 || amount.getAmount() < 0) {
             return BizCodeEnum.VAILD_EXCEPTION;
         }
-        amount.setMaxLimit(AmountConstant.AMOUNT_LIMIT);
+        if (amount.getMaxLimit() == null) {
+            amount.setMaxLimit(AmountConstant.AMOUNT_LIMIT);
+        } else {
+            amount.setMaxLimit(amount.getMaxLimit());
+        }
         amount.setStatus(StatusEnum.EXIST.getValue());
         amount.setCreateTime(new Date());
         amount.setUpdateTime(new Date());

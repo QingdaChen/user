@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
- * 订单
+ * 额度实体
  *
  * @author cqd
  * @email chenqingda@gmail.com

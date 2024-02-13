@@ -70,15 +70,11 @@ public class AmountController {
     /**
      * 修改额度
      */
-    @RequestMapping("/update")
+    @PostMapping("/update")
     //@RequiresPermissions("member:member:update")
-    public R update(@RequestBody AmountEntity[] amountEntities) {
-        List<AmountEntity> amountEntityList = new ArrayList<AmountEntity>();
-        for (AmountEntity amount : amountEntities) {
-            amountEntityList.add(amount);
-        }
-        BizCodeEnum codeEnum = amountService.updateBatchByUserIds(amountEntityList);
-
+    public R update(@RequestBody() Map<String,List<AmountEntity>> paramMap) {
+        List<AmountEntity> amountEntities = paramMap.get("amount_entities");
+        BizCodeEnum codeEnum = amountService.updateBatchByUserIds(amountEntities);
         return Error.handle(codeEnum,"");
     }
 
@@ -87,9 +83,9 @@ public class AmountController {
      */
     @RequestMapping("/delete")
     //@RequiresPermissions("member:member:delete")
-    public R delete(@RequestBody List<Long> userIds) {
+    public R delete(@RequestBody Map<String,List<Long>> paramMap) {
+        List<Long> userIds = paramMap.get("user_ids");
         BizCodeEnum codeEnum = amountService.deleteBatch(userIds);
-
         return Error.handle(codeEnum,"");
     }
 
